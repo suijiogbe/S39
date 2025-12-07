@@ -1,0 +1,6 @@
+# Ignore environment files and SSL certs
+.env
+*.pem
+
+# Node modules
+node_modules/
