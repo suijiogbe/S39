@@ -12,7 +12,7 @@ export class AuthService {
 
   login(username: string, password: string) {
     return this.http.post<{ token: string }>(
-      '/api/login',
+      'http://localhost:3000/api/login',
       { username, password }
     ).pipe(
       tap(res => {
