@@ -10,7 +10,6 @@ const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-const cors = require('cors');
 app.use(cors({
   origin: 'http://129.212.182.77',
   credentials: true
