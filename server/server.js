@@ -10,7 +10,12 @@ const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-app.use(cors());
+const cors = require('cors');
+app.use(cors({
+  origin: 'http://129.212.182.77',
+  credentials: true
+}));
+
 app.use(express.json());
 
 const port = process.env.PORT || 3000;
