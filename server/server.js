@@ -25,6 +25,10 @@ const jwtMW = exjwt({
   algorithms: ['HS256']
 });
 
+const sslConfig = process.env.DB_SSL_CA 
+    ? { ca: fs.readFileSync(path.resolve(__dirname, process.env.DB_SSL_CA)) } 
+    : {};
+
 
 const connection = mysql.createConnection({
   host     : process.env.DB_HOST,
@@ -32,7 +36,7 @@ const connection = mysql.createConnection({
   port     : process.env.DB_PORT,
   password : process.env.DB_PASSWORD,
   database : process.env.DB_NAME,
-  ssl      : { ca: fs.readFileSync(process.env.DB_SSL_CA) }
+  ssl      : sslConfig
 });
 
 connection.connect(err => {
