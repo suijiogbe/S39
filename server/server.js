@@ -36,7 +36,7 @@ const connection = mysql.createConnection({
   port     : process.env.DB_PORT,
   password : process.env.DB_PASSWORD,
   database : process.env.DB_NAME,
-  ssl      : sslConfig
+  // ssl      : { ca: fs.readFileSync(process.env.DB_SSL_CA) }
 });
 
 connection.connect(err => {
