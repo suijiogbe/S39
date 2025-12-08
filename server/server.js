@@ -11,8 +11,9 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 app.use(cors({
-  origin: 'http://129.212.182.77',
-  credentials: true
+  origin: ['http://localhost:4200', 'http://129.212.182.77'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
 }));
 
 app.use(express.json());
