@@ -5,8 +5,10 @@ import { AuthService } from './auth.service';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private apiBase = '';
-  // private backendOrigin = 'http://localhost:3000';
-  private backendOrigin = 'http://129.212.182.77';
+  // Route API calls to local backend when developing on localhost, otherwise to the remote server
+  private backendOrigin = (typeof window !== 'undefined' && window.location.hostname === 'localhost')
+    ? 'http://localhost:3000'
+    : 'http://129.212.182.77';
 
   constructor(private auth: AuthService) {}
 

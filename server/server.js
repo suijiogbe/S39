@@ -26,25 +26,25 @@ const jwtMW = exjwt({
   algorithms: ['HS256']
 });
 
-const sslConfig = process.env.DB_SSL_CA 
-    ? { ca: fs.readFileSync(path.resolve(__dirname, process.env.DB_SSL_CA)) } 
-    : {};
-
-
-const connection = mysql.createConnection({
+const connection = mysql.createPool({
   host     : process.env.DB_HOST,
   user     : process.env.DB_USER,
   port     : process.env.DB_PORT,
   password : process.env.DB_PASSWORD,
   database : process.env.DB_NAME,
-  // ssl      : { ca: fs.readFileSync(process.env.DB_SSL_CA) }
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
-connection.connect(err => {
+connection.getConnection((err, conn) => {
   if (err) {
     console.error('Error connecting to MySQL database:', err);
     process.exit(1);
-  } else { console.log('Connected to MySQL database.'); }
+  } else {
+    console.log('Connected to MySQL database (connection).');
+    conn.release();
+  }
 });
 
 app.get('/', (req, res) => {
@@ -55,7 +55,7 @@ app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
 
   if (username === 'stephanie' && password === 'stephanie') {
-    const token = jwt.sign({ user: username }, secretKey, { expiresIn: '1m' });
+    const token = jwt.sign({ user: username }, secretKey, { expiresIn: '3m' });
     res.json({
       success: true,
       err: null,
@@ -71,23 +71,23 @@ app.post('/api/login', (req, res) => {
 });
 
 app.get('/api/chart1', jwtMW, (req, res) => {
-  connection.query('SELECT * FROM chart1', (error, results) => {
-    if (error) {
-      console.error('DB query error for chart1:', error);
-      return res.status(500).json({error: error.message });
-    }
-    res.json(results);
-  });
+    connection.query('SELECT * FROM chart1', (error, results) => {
+        if (error) {
+            console.error('DB query error for chart1:', error);
+            return res.status(500).json({error: error.message });
+        }
+        res.json(results);
+    });
 });
 
 app.get('/api/chart2', jwtMW, (req, res) => {
-  connection.query('SELECT * FROM chart2', (error, results) => {
-    if (error) {
-      console.error('DB query error for chart2:', error);
-      return res.status(500).json({error: error.message });
-    }
-    res.json(results);
-  });
+    connection.query('SELECT * FROM chart2', (error, results) => {
+        if (error) {
+            console.error('DB query error for chart2:', error);
+            return res.status(500).json({error: error.message });
+        }
+        res.json(results);
+    });
 });
 
 process.on('SIGINT', () => {
